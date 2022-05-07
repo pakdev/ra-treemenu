@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import { useTranslate } from 'react-admin';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import List from '@material-ui/core/List';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Typography from '@material-ui/core/Typography';
-import Collapse from '@material-ui/core/Collapse';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/core/styles';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import List from '@mui/material/List';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Typography from '@mui/material/Typography';
+import Collapse from '@mui/material/Collapse';
+import Tooltip from '@mui/material/Tooltip';
+import makeStyles from '@mui/styles/makeStyles';
 import classnames from 'classnames';
 
 const useStyles = makeStyles(

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import LabelIcon from '@material-ui/icons/Label';
-import { useMediaQuery } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import LabelIcon from '@mui/icons-material/Label';
+import { useMediaQuery } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import {
     MenuItemLink,
     getResources,
@@ -11,7 +11,7 @@ import {
 import PropTypes from 'prop-types';
 import { useSelector, shallowEqual } from 'react-redux';
 import classnames from 'classnames';
-import DefaultIcon from '@material-ui/icons/ViewList';
+import DefaultIcon from '@mui/icons-material/ViewList';
 import CustomMenuItem from './CustomMenuItem';
 
 const useStyles = makeStyles(
@@ -58,7 +58,7 @@ const Menu = (props) => {
     const translate = useTranslate();
     const open = useSelector((state) => state.admin.ui.sidebarOpen);
     const pathname = useSelector((state) => state.router.location.pathname);
-    const resources = resources || useSelector(getResources, shallowEqual);
+    const finalResources = resources || useSelector(getResources, shallowEqual);
     const hasList = (resource) => (resource.hasList);
 
     const handleToggle = (parent) => {
@@ -80,7 +80,7 @@ const Menu = (props) => {
          * 
          * thrown by RA at the time of rendering.
          */
-        theme.breakpoints.down('xs')
+        theme.breakpoints.down('sm')
     );
 
     const isParent = (resource) => (
@@ -130,8 +130,8 @@ const Menu = (props) => {
         if (resource.options && resource.options.label)
             resourcename = resource.options.label;
         else if (resource.name) {
-            resourcename = translate(`resources.${resource.name}.name`);
-            if (resourcename.startsWith('resources.'))
+            resourcename = translate(`finalResources.${resource.name}.name`);
+            if (resourcename.startsWith('finalResources.'))
                 resourcename = geResourceName(resource.name);
         }
         return resourcename;
@@ -172,7 +172,7 @@ const Menu = (props) => {
         >
             {
                 // eslint-disable-next-line
-                resources
+                finalResources
                     .filter((resource) => isChildOfParent(resource, parentResource) && hasList(resource))
                     .map((childResource) => { return MenuItem(childResource); })
             }
@@ -197,7 +197,7 @@ const Menu = (props) => {
      * Initialise all parents to inactive first.
      * Also find the active resource name.
      */
-    resources.forEach(resource => {
+    finalResources.forEach(resource => {
         if (isParent(resource)) {
             initialExpansionState[resource.name] = false;
         } else if (pathname.startsWith(`/${resource.name}`) && resource.options.hasOwnProperty('menuParent')) {
@@ -217,7 +217,7 @@ const Menu = (props) => {
      * Looping over all resources and pushing the menu tree
      * for rendering in the order we find them declared in
      */
-    resources.forEach(r => {
+    finalResources.forEach(r => {
         if (isParent(r)) resRenderGroup.push(mapParentStack(r));
         if (isOrphan(r)) resRenderGroup.push(mapIndependent(r));
     });
@@ -252,8 +252,8 @@ Menu.propTypes = {
     hasDashboard: PropTypes.bool,
     logout: PropTypes.element,
     onMenuClick: PropTypes.func,
-    dashboardlabel:PropTypes.string,
-    resources:PropTypes.array,
+    dashboardlabel: PropTypes.string,
+    resources: PropTypes.array,
 };
 
 Menu.defaultProps = {
