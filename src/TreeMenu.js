@@ -4,12 +4,11 @@ import { useMediaQuery } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {
     MenuItemLink,
-    getResources,
+    useResourceDefinitions,
     useTranslate,
     DashboardMenuItem
 } from 'react-admin';
 import PropTypes from 'prop-types';
-import { useSelector, shallowEqual } from 'react-redux';
 import classnames from 'classnames';
 import DefaultIcon from '@mui/icons-material/ViewList';
 import CustomMenuItem from './CustomMenuItem';
@@ -58,8 +57,12 @@ const Menu = (props) => {
     const translate = useTranslate();
     const open = useSelector((state) => state.admin.ui.sidebarOpen);
     const pathname = useSelector((state) => state.router.location.pathname);
-    const finalResources = resources || useSelector(getResources, shallowEqual);
     const hasList = (resource) => (resource.hasList);
+
+    if (!resources) {
+        const resourceDefinitions = useResourceDefinitions();
+        resources = Object.keys(resourceDefinitions).map(name => resourceDefinitions[name]);
+    }
 
     const handleToggle = (parent) => {
         /**
@@ -130,8 +133,8 @@ const Menu = (props) => {
         if (resource.options && resource.options.label)
             resourcename = resource.options.label;
         else if (resource.name) {
-            resourcename = translate(`finalResources.${resource.name}.name`);
-            if (resourcename.startsWith('finalResources.'))
+            resourcename = translate(`resources.${resource.name}.name`);
+            if (resourcename.startsWith('resources.'))
                 resourcename = geResourceName(resource.name);
         }
         return resourcename;
@@ -172,7 +175,7 @@ const Menu = (props) => {
         >
             {
                 // eslint-disable-next-line
-                finalResources
+                resources
                     .filter((resource) => isChildOfParent(resource, parentResource) && hasList(resource))
                     .map((childResource) => { return MenuItem(childResource); })
             }
@@ -197,7 +200,7 @@ const Menu = (props) => {
      * Initialise all parents to inactive first.
      * Also find the active resource name.
      */
-    finalResources.forEach(resource => {
+    resources.forEach(resource => {
         if (isParent(resource)) {
             initialExpansionState[resource.name] = false;
         } else if (pathname.startsWith(`/${resource.name}`) && resource.options.hasOwnProperty('menuParent')) {
@@ -217,7 +220,7 @@ const Menu = (props) => {
      * Looping over all resources and pushing the menu tree
      * for rendering in the order we find them declared in
      */
-    finalResources.forEach(r => {
+    resources.forEach(r => {
         if (isParent(r)) resRenderGroup.push(mapParentStack(r));
         if (isOrphan(r)) resRenderGroup.push(mapIndependent(r));
     });
