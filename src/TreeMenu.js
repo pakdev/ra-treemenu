@@ -53,7 +53,7 @@ const Menu = (props) => {
         ...rest
     } = props;
 
-    const classes = useStyles(props);
+    const classes = useStyles(undefined, { props });
     const translate = useTranslate();
     const open = useSelector((state) => state.admin.ui.sidebarOpen);
     const pathname = useSelector((state) => state.router.location.pathname);
